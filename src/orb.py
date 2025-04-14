@@ -4,8 +4,8 @@ import numpy as np
 from PIL import Image
 import cairosvg
 from cluster_logos_orb import cluster_logos
-LOGO_DIR = 'Logos'
-PROCESSED_DIR = 'Logos_raster'  # unde salvăm PNG-urile procesate
+LOGO_DIR = '../Logos'
+PROCESSED_DIR = '../Logos_raster'  # unde salvăm PNG-urile procesate
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 def convert_svg_to_png(svg_path, output_path):
