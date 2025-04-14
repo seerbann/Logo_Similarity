@@ -1,0 +1,13 @@
+#py
+__pycache__/
+
+# Environments
+myenv/
+
+#logos
+Logos/
+Logos_raster/
+
+#other
+logos.snappy.parquet
+extracted_logos.csv
