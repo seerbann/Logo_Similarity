@@ -1,83 +1,78 @@
 import os
-import cv2
-import numpy as np
-from PIL import Image
-import cairosvg
+from orb_logic import compute_orb_descriptors
+from sift_logic import compute_sift_descriptors
+from phash_logic import compute_phash
 from cluster_logos_orb import cluster_logos
+from cluster_logos_sift import cluster_logos_sift
+from cluster_logos_phash import cluster_logos_phash
+from utils import convert_svg_to_png, convert_to_png_with_pil
+
 LOGO_DIR = '../Logos'
-PROCESSED_DIR = '../Logos_raster'  # unde salvăm PNG-urile procesate
+PROCESSED_DIR = '../Logos_raster'
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
-def convert_svg_to_png(svg_path, output_path):
-    try:
-        cairosvg.svg2png(url=svg_path, write_to=output_path)
-        return output_path
-    except Exception as e:
-        print(f"Eroare la conversie SVG: {svg_path} -> {e}")
-        return None
+descriptors_orb = {}
+descriptors_sift = {}
+hashes_phash = {}
 
-def compute_orb_descriptors(image_path):
-    try:
-        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-        orb = cv2.ORB_create()
-        keypoints, descriptors = orb.detectAndCompute(image, None)
-        return descriptors
-    except Exception as e:
-        print(f"Eroare ORB la {image_path}: {e}")
-        return None
-
-def compare_descriptors(desc1, desc2, ratio_threshold=0.75):
-    """
-    Compara doi vectori de descriptor ORB si returneaza un scor de similaritate.
-    
-    - desc1, desc2: descriptorii ORB (np.ndarray)
-    - ratio_threshold: prag pentru good match (Lowes ratio test)
-    
-    Returneaza:
-    - numar de match-uri bune
-    - scor de similaritate (0.0 - 1.0, optional)
-    """
-    if desc1 is None or desc2 is None:
-        return 0, 0.0
-
-    bf = cv2.BFMatcher(cv2.NORM_HAMMING)
-    matches = bf.knnMatch(desc1, desc2, k=2)
-
-    # Lowe's ratio test
-    good_matches = []
-    for m, n in matches:
-        if m.distance < ratio_threshold * n.distance:
-            good_matches.append(m)
-
-    score = len(good_matches)
-    normalized_score = score / max(len(desc1), len(desc2))  # scor intre 0.0 si 1.0
-    return score, normalized_score
-
-# === Procesam toate logourile ===
-descriptors_dict = {}
+VALID_IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.svg', '.ico', '.bmp', '.tif', '.tiff'}
 
 for filename in os.listdir(LOGO_DIR):
-    filepath = os.path.join(LOGO_DIR, filename)
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in VALID_IMAGE_EXTENSIONS:
+        print(f"[SKIP] Format neacceptat: {filename}")
+        continue
 
-    # Convertim SVG -> PNG dacă e cazul
-    if filename.lower().endswith('.svg'):
-        png_filename = os.path.splitext(filename)[0] + '.png'
-        png_path = os.path.join(PROCESSED_DIR, png_filename)
+    filepath = os.path.join(LOGO_DIR, filename)
+    png_filename = os.path.splitext(filename)[0] + '.png'
+    png_path = os.path.join(PROCESSED_DIR, png_filename)
+
+    # Conversie după tip
+    if ext == '.svg':
         if not os.path.exists(png_path):
             convert_svg_to_png(filepath, png_path)
-        img_path = png_path
+    elif ext != '.png':
+        if not os.path.exists(png_path):
+            convert_to_png_with_pil(filepath, png_path)
     else:
-        img_path = filepath
+        png_path = filepath
 
-    # Calculăm descriptorii ORB
-    descriptors = compute_orb_descriptors(img_path)
-    if descriptors is not None:
-        descriptors_dict[filename] = descriptors
+    # ORB
+    orb_desc = compute_orb_descriptors(png_path)
+    if orb_desc is not None:
+        descriptors_orb[filename] = orb_desc
 
-print(f"Descriptorii ORB au fost calculați pentru {len(descriptors_dict)} logouri.")
+    # SIFT
+    sift_desc = compute_sift_descriptors(png_path)
+    if sift_desc is not None:
+        descriptors_sift[filename] = sift_desc
 
-clusters = cluster_logos(descriptors_dict, similarity_threshold=0.15)
+    # pHash
+    phash = compute_phash(png_path)
+    if phash is not None:
+        hashes_phash[filename] = phash
+
+print(f"[INFO - ORB] Descriptorii ORB calculați pentru {len(descriptors_orb)} logouri.")
+print(f"[INFO - SIFT] Descriptorii SIFT calculați pentru {len(descriptors_sift)} logouri.")
+print(f"[INFO - pHash] Hash-urile pHash calculate pentru {len(hashes_phash)} logouri.")
+
+# Clustering ORB
+clusters = cluster_logos(descriptors_orb, similarity_threshold=0.15)
 for idx, group in enumerate(clusters, 1):
-    print(f"Grup {idx}:")
+    print(f"[ORB] Grup {idx}:")
+    for logo in group:
+        print(f"   - {logo}")
+
+# Clustering SIFT
+clusters_sift = cluster_logos_sift(descriptors_sift, similarity_threshold=0.15)
+for idx, group in enumerate(clusters_sift, 1):
+    print(f"[SIFT] Grup {idx}:")
+    for logo in group:
+        print(f"   - {logo}")
+
+# Clustering pHash
+clusters_phash = cluster_logos_phash(hashes_phash, threshold=10)
+for idx, group in enumerate(clusters_phash, 1):
+    print(f"[pHash] Grup {idx}:")
     for logo in group:
         print(f"   - {logo}")

@@ -8,9 +8,13 @@ def compare_descriptors_sift(desc1, desc2, ratio_threshold=0.75):
     matches = bf.knnMatch(desc1, desc2, k=2)
 
     good_matches = []
-    for m, n in matches:
+    for pair in matches:
+        if len(pair) < 2:
+            continue  # Ignoră dacă nu sunt 2 matches (nu se poate face ratio test)
+        m, n = pair
         if m.distance < ratio_threshold * n.distance:
             good_matches.append(m)
+
 
     score = len(good_matches)
     normalized_score = score / max(len(desc1), len(desc2))

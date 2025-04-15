@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 # === Config ===
 INPUT_PARQUET = '../logos.snappy.parquet'  # Numele .parquet
-LOGO_FOLDER = 'Logos'               # Folder unde salvezi logo-urile
-RESULTS_CSV = 'extracted_logos.csv'
+LOGO_FOLDER = '../Logos'               # Folder unde salvezi logo-urile
+RESULTS_CSV = '../extracted_logos.csv'
 
 # Functie pentru extragerea URL-ului logo-ului din HTML
 def extract_logo_url(html, base_url):
@@ -48,7 +48,7 @@ def download_image(img_url, domain):
 
 # Citeste domeniile din fisierul .parquet
 df = pd.read_parquet(INPUT_PARQUET)
-df = pd.read_parquet(INPUT_PARQUET).head(200) #limita de 200 momentan
+df = pd.read_parquet(INPUT_PARQUET).head(1000) #limita
 if 'domain' not in df.columns:
     raise ValueError("Fisierul Parquet trebuie sa contina o coloana numita 'domain'.")
 

@@ -10,13 +10,17 @@ def compare_descriptors(desc1, desc2, ratio_threshold=0.75):
 
     # Lowe's ratio test
     good_matches = []
-    for m, n in matches:
+    for pair in matches:
+        if len(pair) < 2:
+            continue
+        m, n = pair
         if m.distance < ratio_threshold * n.distance:
             good_matches.append(m)
 
     score = len(good_matches)
     normalized_score = score / max(len(desc1), len(desc2))  # Scor intre 0.0 si 1.0
     return score, normalized_score
+
 
 def cluster_logos(descriptors_dict, similarity_threshold=0.15):
     logos = list(descriptors_dict.keys())
