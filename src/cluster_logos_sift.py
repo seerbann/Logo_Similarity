@@ -1,5 +1,7 @@
 import cv2
 
+#clustering
+
 def compare_descriptors_sift(desc1, desc2, ratio_threshold=0.75):
     if desc1 is None or desc2 is None:
         return 0, 0.0
@@ -43,3 +45,14 @@ def cluster_logos_sift(descriptors_dict, similarity_threshold=0.15):
         clusters.append(cluster)
 
     return clusters
+
+#compute desscriptor
+def compute_sift_descriptors(image_path):
+    try:
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        sift = cv2.SIFT_create()
+        keypoints, descriptors = sift.detectAndCompute(image, None)
+        return descriptors
+    except Exception as e:
+        print(f"[SIFT] Eroare la {image_path}: {e}")
+        return None

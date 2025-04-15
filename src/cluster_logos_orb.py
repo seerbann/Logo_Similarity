@@ -1,6 +1,7 @@
 import cv2
 from collections import defaultdict
 
+#clustering
 def compare_descriptors(desc1, desc2, ratio_threshold=0.75):
     if desc1 is None or desc2 is None:
         return 0, 0.0
@@ -45,3 +46,14 @@ def cluster_logos(descriptors_dict, similarity_threshold=0.15):
         clusters.append(cluster)
 
     return clusters
+
+# descriptor computation
+def compute_orb_descriptors(image_path):
+    try:
+        image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+        orb = cv2.ORB_create()
+        keypoints, descriptors = orb.detectAndCompute(image, None)
+        return descriptors
+    except Exception as e:
+        print(f"[ORB] Eroare la {image_path}: {e}")
+        return None

@@ -1,10 +1,7 @@
 import os
-from orb_logic import compute_orb_descriptors
-from sift_logic import compute_sift_descriptors
-from phash_logic import compute_phash
-from cluster_logos_orb import cluster_logos
-from cluster_logos_sift import cluster_logos_sift
-from cluster_logos_phash import cluster_logos_phash
+from cluster_logos_orb import cluster_logos,compute_orb_descriptors
+from cluster_logos_sift import cluster_logos_sift,compute_sift_descriptors
+from cluster_logos_phash import cluster_logos_phash,compute_phash
 from utils import convert_svg_to_png, convert_to_png_with_pil
 
 LOGO_DIR = '../Logos'
@@ -52,6 +49,7 @@ for filename in os.listdir(LOGO_DIR):
     if phash is not None:
         hashes_phash[filename] = phash
 
+
 print(f"[INFO - ORB] Descriptorii ORB calculați pentru {len(descriptors_orb)} logouri.")
 print(f"[INFO - SIFT] Descriptorii SIFT calculați pentru {len(descriptors_sift)} logouri.")
 print(f"[INFO - pHash] Hash-urile pHash calculate pentru {len(hashes_phash)} logouri.")
@@ -76,3 +74,4 @@ for idx, group in enumerate(clusters_phash, 1):
     print(f"[pHash] Grup {idx}:")
     for logo in group:
         print(f"   - {logo}")
+
