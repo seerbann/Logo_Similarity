@@ -2,6 +2,7 @@ import os
 from cluster_logos_orb import cluster_logos,compute_orb_descriptors
 from cluster_logos_sift import cluster_logos_sift,compute_sift_descriptors
 from cluster_logos_phash import cluster_logos_phash,compute_phash
+from cluster_logos_orb_phash import cluster_logos_orb_phash
 from utils import convert_svg_to_png, convert_to_png_with_pil
 
 LOGO_DIR = '../Logos'
@@ -75,3 +76,9 @@ for idx, group in enumerate(clusters_phash, 1):
     for logo in group:
         print(f"   - {logo}")
 
+# orb + phash
+clusters_orb_phash = cluster_logos_orb_phash(descriptors_orb, hashes_phash, orb_threshold=0.15, phash_threshold=10)
+for idx, group in enumerate(clusters_orb_phash, 1):
+    print(f"[ORB + pHash] Grup {idx}:")
+    for logo in group:
+        print(f"   - {logo}")
