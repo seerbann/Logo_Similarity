@@ -5,15 +5,22 @@ from cluster_logos_phash import cluster_logos_phash, compute_phash
 from cluster_logos_orb_phash import cluster_logos_orb_phash
 from cluster_logos_ssim import cluster_logos_ssim
 from utils import convert_svg_to_png, convert_to_png_with_pil,remove_icc_profile
+from cluster_logos_dl import compute_resnet_descriptor, compute_efficientnet_descriptor, cluster_dl_features
+
 
 LOGO_DIR = '../Logos'
 PROCESSED_DIR = '../Logos_raster'
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
+# 'classic' feature descriptors
 descriptors_orb = {}
 descriptors_sift = {}
 hashes_phash = {}
 images_for_ssim = {}
+
+# DeepLearning pre-trained feature descriptors
+resnet_features = {}
+effnet_features = {}
 
 VALID_IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.svg', '.ico', '.bmp', '.tif', '.tiff'}
 
@@ -55,6 +62,16 @@ for filename in os.listdir(LOGO_DIR):
 
     # SSIM
     images_for_ssim[filename] = png_path
+
+    # ResNet
+    resnet_desc = compute_resnet_descriptor(png_path)
+    if resnet_desc is not None:
+        resnet_features[filename] = resnet_desc
+
+    # EfficientNet
+    effnet_desc = compute_efficientnet_descriptor(png_path)
+    if effnet_desc is not None:
+        effnet_features[filename] = effnet_desc
 
 
 print(f"[INFO - ORB] Descriptorii ORB calculați pentru {len(descriptors_orb)} logouri.")
@@ -98,3 +115,17 @@ for idx, group in enumerate(clusters_ssim, 1):
     for logo in group:
         print(f"   - {logo}")
 '''
+
+# Clustering ResNet
+clusters_resnet = cluster_dl_features(resnet_features, eps=0.5, min_samples=2)
+for idx, group in enumerate(clusters_resnet, 1):
+    print(f"[ResNet] Grup {idx}:")
+    for logo in group:
+        print(f"   - {logo}")
+
+# Clustering EfficientNet
+clusters_effnet = cluster_dl_features(effnet_features, eps=0.5, min_samples=2)
+for idx, group in enumerate(clusters_effnet, 1):
+    print(f"[EffNet] Grup {idx}:")
+    for logo in group:
+        print(f"   - {logo}")
