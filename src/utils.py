@@ -19,3 +19,17 @@ def convert_to_png_with_pil(input_path, output_path):
     except Exception as e:
         print(f"Eroare la conversie PIL: {input_path} -> {e}")
         return None
+
+def remove_icc_profile(image_path, save_path=None):
+    try:
+        img = Image.open(image_path)
+        data = list(img.getdata())
+        img_no_profile = Image.new(img.mode, img.size)
+        img_no_profile.putdata(data)
+
+        if save_path is None:
+            save_path = image_path
+
+        img_no_profile.save(save_path)
+    except Exception as e:
+        print(f"[Clean ICC] Eroare la {image_path}: {e}")

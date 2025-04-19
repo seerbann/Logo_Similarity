@@ -23,7 +23,7 @@ def extract_logo_url(html, base_url):
             if src:
                 candidates.append(urljoin(base_url, src))
 
-    # Fallback: favicon sau alte link rel="icon"
+    # Fallback: favicon sau alte link rel="icon" 
     if not candidates:
         for link in soup.find_all('link', rel=lambda x: x and 'icon' in x):
             href = link.get('href')
@@ -80,4 +80,4 @@ for domain in tqdm(df['domain']):
 
 # Salveaza rezultatele in CSV
 pd.DataFrame(results).to_csv(RESULTS_CSV, index=False)
-print(f"✔ Rezultatele au fost salvate in {RESULTS_CSV}")
+print(f"Rezultatele au fost salvate in {RESULTS_CSV}")
