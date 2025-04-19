@@ -14,3 +14,13 @@ Method that compares 2 pictures at a global level, meaning that it analyses cont
 ### <u> CNN pre-trained models</u> used:
 - **ResNet50**
 - **EfficientNet B0**
+# How to run (after you installed dependencies)
+```bash
+python3 main.py --orb          # Only ORB
+python3 main.py --phash        # Only pHash
+python3 main.py --orbphash     # ORB + pHash combo
+python3 main.py --ssim         # SSIM (slow comparison process)
+python3 main.py --resnet       # ResNet
+python3 main.py --effnet       # EfficientNet
+python3 main.py --all          # Run everything
+```

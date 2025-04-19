@@ -1,6 +1,6 @@
 import torch
 import torchvision.transforms as transforms
-from torchvision.models import resnet50, efficientnet_b0
+from torchvision.models import resnet50, efficientnet_b0,ResNet50_Weights,EfficientNet_B0_Weights
 from sklearn.cluster import DBSCAN
 import numpy as np
 from PIL import Image
@@ -19,11 +19,11 @@ preprocess = transforms.Compose([
 ])
 
 # === MODELE ===
-resnet = resnet50(pretrained=True)
+resnet = resnet50(weights=ResNet50_Weights.DEFAULT)
 resnet = torch.nn.Sequential(*list(resnet.children())[:-1])  # scoatem FC
 resnet.eval().to(device)
 
-efficientnet = efficientnet_b0(pretrained=True)
+efficientnet = efficientnet_b0(weights=EfficientNet_B0_Weights.DEFAULT)
 efficientnet = torch.nn.Sequential(*list(efficientnet.children())[:-1])
 efficientnet.eval().to(device)
 
