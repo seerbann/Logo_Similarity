@@ -33,3 +33,4 @@ def remove_icc_profile(image_path, save_path=None):
         img_no_profile.save(save_path)
     except Exception as e:
         print(f"[Clean ICC] Eroare la {image_path}: {e}")
+
