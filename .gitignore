@@ -7,6 +7,7 @@ myenv/
 #logos
 Logos/
 Logos_raster/
+Logos_10000/
 
 #other
 logos.snappy.parquet

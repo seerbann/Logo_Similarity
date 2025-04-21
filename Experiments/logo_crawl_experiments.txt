@@ -1,0 +1,3 @@
+100%|█████████████████████████████████| 4384/4384 [2:52:36<00:00,  2.36s/it]
+Rezultatele au fost salvate in ../extracted_logos.csv
+Time elapsed: 10357.09 seconds = 172 minutes
