@@ -1,12 +1,13 @@
 import cv2
 import itertools
+from tqdm import tqdm 
 from skimage.metrics import structural_similarity as ssim
 from multiprocessing import Pool, cpu_count
 
 def compute_ssim_pair(pair):
     key1, key2, path1, path2 = pair
     try:
-        print(f"[SSIM] Comparing {path1} with {path2}")
+        #print(f"[SSIM] Comparing {path1} with {path2}")
         img1 = cv2.imread(path1, cv2.IMREAD_GRAYSCALE)
         img2 = cv2.imread(path2, cv2.IMREAD_GRAYSCALE)
 
@@ -43,7 +44,7 @@ def cluster_logos_ssim(images_dict, threshold=0.75):
     
     # Rulează comparațiile în paralel
     with Pool(processes=cpu_count()) as pool:
-        results = pool.map(compute_ssim_pair, pairs)
+        results = list(tqdm(pool.imap_unordered(compute_ssim_pair, pairs), total=len(pairs), desc="Comparații SSIM"))
 
     # Creează graful de similarități
     similarity_graph = {key: set() for key in keys}

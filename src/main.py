@@ -7,7 +7,7 @@ from cluster_logos_sift import cluster_logos_sift, compute_sift_descriptors
 from cluster_logos_phash import cluster_logos_phash, compute_phash
 from cluster_logos_orb_phash import cluster_logos_orb_phash
 from cluster_logos_ssim import cluster_logos_ssim
-from utils import convert_svg_to_png, convert_to_png_with_pil, remove_icc_profile
+from utils import convert_svg_to_png, convert_to_png_with_pil, remove_icc_profile,create_graph
 from cluster_logos_dl import compute_resnet_descriptor, compute_efficientnet_descriptor, cluster_dl_features
 
 # Argument parsing
@@ -23,9 +23,25 @@ parser.add_argument('--all', action='store_true', help='Run all methods')
 args = parser.parse_args()
 
 # Paths and setup
-LOGO_DIR = '../Logos'
+LOGO_DIR = '../Logos_10000'
 PROCESSED_DIR = '../Logos_raster'
 os.makedirs(PROCESSED_DIR, exist_ok=True)
+
+# timings for graph creation
+timings = {
+    "ORB - descriptor": 0,
+    "ORB - cluster": 0,
+    "SIFT - descriptor": 0,
+    "SIFT - cluster": 0,    
+    "Phash - descriptor": 0,
+    "Phash - cluster": 0,
+    "SSIM - comparing": 0,
+    "SSIM - clustering": 0,
+    "Resnet - descriptor": 0,
+    "Resnet - cluster": 0,
+    "Effnet - descriptor": 0,
+    "Effnet - cluster": 0,
+}
 
 # Storage for features
 descriptors_orb = {}
@@ -35,7 +51,7 @@ images_for_ssim = {}
 resnet_features = {}
 effnet_features = {}
 
-VALID_IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.svg', '.ico', '.bmp', '.tif', '.tiff'}
+VALID_IMAGE_EXTENSIONS = {'.png', '.jpg', '.jpeg', '.svg', '.ico', '.bmp', '.tif', '.tiff', '.webp'}
 
 # Process images
 start_total = time.time()
@@ -54,6 +70,9 @@ for filename in os.listdir(LOGO_DIR):
         if not os.path.exists(png_path):
             convert_svg_to_png(filepath, png_path)
     elif ext != '.png':
+        if not os.path.exists(png_path):
+            convert_to_png_with_pil(filepath, png_path)
+    elif ext == '.webp':
         if not os.path.exists(png_path):
             convert_to_png_with_pil(filepath, png_path)
     else:
@@ -154,3 +173,5 @@ if args.effnet or args.all:
     print(f"[EffNet] Clustering terminat în {time.time() - start:.2f} secunde.")
     for idx, group in enumerate(clusters, 1):
         print(f"[EffNet] Grup {idx}:\n" + "\n".join([f"   - {logo}" for logo in group]))
+
+#create_graph(timings)
