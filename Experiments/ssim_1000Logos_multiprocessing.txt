@@ -1,3 +1,9 @@
+Date pentru 682 LOGOS
 [INFO] Procesare imagini finalizată în 21.55 secunde.
 [SSIM] Total pairs to compare: 226801
 [SSIM] Clustering terminat în 1030.28 secunde.
+
+
+Pentru 2568 Logos
+Comparații SSIM:  3288330/3288330 [4:27:14<00:00, 205.07it/s]
+Clustering SSIM:  741/741 [00:00<00:00, 2714392.37grup/s]

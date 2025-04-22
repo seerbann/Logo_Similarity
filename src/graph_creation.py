@@ -9,6 +9,7 @@ from cluster_logos_orb_phash import cluster_logos_orb_phash
 from cluster_logos_ssim import cluster_logos_ssim
 from utils import convert_svg_to_png, convert_to_png_with_pil, remove_icc_profile,create_graph
 from cluster_logos_dl import compute_resnet_descriptor, compute_efficientnet_descriptor, cluster_dl_features
+from collections import defaultdict
 
 # Argumente din linie de comandă
 parser = argparse.ArgumentParser(description="Logo clustering using different descriptors.")
@@ -22,11 +23,13 @@ parser.add_argument('--orbphash', action='store_true')
 parser.add_argument('--all', action='store_true')
 args = parser.parse_args()
 
+
 LOGO_DIR = '../Logos_10000'
 PROCESSED_DIR = '../Logos_raster'
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
-timings = {}
+
+timings = defaultdict(float)
 descriptors_orb = {}
 descriptors_sift = {}
 hashes_phash = {}
