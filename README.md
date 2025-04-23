@@ -24,3 +24,4 @@ python3 main.py --resnet       # ResNet
 python3 main.py --effnet       # EfficientNet
 python3 main.py --all          # Run everything
 ```
+![image info](timp_algoritmi.png)
