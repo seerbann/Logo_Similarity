@@ -24,4 +24,18 @@ python3 main.py --resnet       # ResNet
 python3 main.py --effnet       # EfficientNet
 python3 main.py --all          # Run everything
 ```
-![image info](timp_algoritmi.png)
+# Experiments
+- First, regarding the Logo crawiling method I've used. I built a web sraper designed to extract and download logo images from a parquet file. 
+It uses several powerful libraries: <u> pandas</u> to handle the parquet file, <u> requests</u> to handel HTTP requests, <u>BeautifulSoup</u> for HTML parsing and locating logo-related tags.
+For each domain, the script attempts to visit the homepage, identify a likely logo image (typically marked by "logo" in attributes or standard <link rel="icon"> tags), and download it to a specified folder.
+The results — including the domain, logo URL, and local file path — are saved into a CSV file for further use. The script also measures and prints the total execution time.
+<br/>Results for the given URLS: <br/>
+<i>Out of 4384 URLS the algorithm found 2568 logos in 172 minutes. </i> <br>
+- Then, regarding each method's performance I've created a chart for 2568 LOGOS computation time. Each method is evaluated based on <u>descriptor computation</u> time, <u>clustering time</u> and <u>total time</u>. <br>
+![Time per method](timp_algoritmi.png) <br/>
+<u> The groups/clusters created can be found in src/logs.txt </u>
+- From the results, ResNet is the most time-consuming method in terms of descriptor computation (179s), though clustering is nearly instantaneous. EfficientNet shows similar behavior with a high descriptor time (76s) and negligible clustering time. Traditional methods like ORB and SIFT balance computation and clustering more evenly, with SIFT being the slowest among the two overall. pHash stands out as the most efficient, with the lowest total time (~18s), making it an excellent choice for quick clustering tasks. This comparison helps highlight the trade-offs between deep learning-based and classical approaches in terms of speed and complexity. <br>
+- Although methods like ORB, SIFT, pHash, ResNet, and EfficientNet are effective in identifying visual similarities based on mathematical or learned features, they don’t necessarily reflect how humans perceive logo similarity. These techniques focus on structural or statistical patterns, which often miss the subtle nuances that human eyes easily recognize. In contrast, SSIM (Structural Similarity Index) offers a more perceptual approach, comparing images in a way that aligns more closely with human visual judgment. However, this advantage comes at a cost—SSIM is significantly more time-consuming, especially when comparing large datasets, making it less efficient for large-scale clustering despite its superior perceptual accuracy. <br/>
+SSIM RESULTS: <br>
+For 2568 LOGOS SSIM had a total of 3288330 comparations to make. This took 4:27:14 to compute.
+Some groups are written in Experiments/ssim_1000Logos.txt .
