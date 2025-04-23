@@ -1,6 +1,6 @@
 # Logo Similarity
 ## Program created with the objective to document how different feature descriptors, the Structural Similarity Index Measure and different CNN models behave on clustering a set of logos crawled from the web. Also not using any clustering algorithm like DBSCAN or k-means.
-
+### Knowing the logos come in diverse fromats, i implemented many image preprocessing steps (format conversions) to ensure consistency. Next I explored multiple feature extraction and similarity methods, from traditional ones(ORB,SIFT, pHash) to modern deep learning models (ResNet, EffNet) and even perceptual-based metrics like SSIM. I allowed flexible experimentation by integrating command line arguments to run different methods or all at once. Finally, I addea a performance tracking system for measuring and visualising processing time that helps comparing efficiency and scalability. 
 ### <u> Feature descriptors</u> used:
 - **ORB (Oriented FAST and Rotated Brief)** [ORB - OpenCV docs](https://docs.opencv.org/4.x/d1/d89/tutorial_py_orb.html)  <br/>
 - **SIFT (Scale Invariant Feature Transform)**  [SIFT-Wikipedia](https://en.wikipedia.org/wiki/Scale-invariant_feature_transform)<br/>
